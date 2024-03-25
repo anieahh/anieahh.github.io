@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Glass+Antiqua&family=Londrina+Shadow&family=Montserrat:ital@1&family=Patrick+Hand&family=Permanent+Marker&display=swap" rel="stylesheet">
+  <title>Anieah Holman</title>
+  <style>
+    body {
+      text-align: center;
+      background: url("https://getwallpapers.com/wallpaper/full/4/4/8/169964.jpg");
+      background-size: cover;
+      background-position: center;
+      color: pink;
+      font-family: Patrick Hand;
+    }
+    p {
+      font-size: 27px;
+    }
+    input {
+      border: 0;
+      padding: 10px;
+      font-size: 17px;
+    }
+    input[type="submit"] {
+      background: pink;
+      color: purple;
+     font-family: 'Montserrat', sans-serif;
+    }+*--+
+    img {
+      border-radius: 50px;
+      }
+  </style>
+</head>
+<body>
+  <img src="https://media.istockphoto.com/id/1383100116/photo/portrait-of-smiling-young-hispanic-latina-student-at-campus-school-university.jpg?s=612x612&w=0&k=20&c=bTHkyJpvVprejFt8oOuxvyd1c24aR2Sx-MNhFQljpJ8=">
+  <p>Hi! I'm Anieah, a student looking to make friends. Say hello!</p>
+  <input id="Name" placeholder="Your name">
+  <input id="Email" type="email" placeholder="Your email">
+  <input id="submit" type="submit">
+  
+ <script type="module">
+   // Import the functions you need from the SDKs you need
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+   import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+   
+   // TODO: Add SDKs for Firebase products that you want to use
+   // https://firebase.google.com/docs/web/setup#available-libraries
+
+   // Your web app's Firebase configuration
+   const firebaseConfig = {
+     apiKey: "AIzaSyBIiVSzRoCN_jihcFh8YaVeyoW39G_mxR8",
+     authDomain: "anieah-website-1.firebaseapp.com",
+     projectId: "anieah-website-1",
+     storageBucket: "anieah-website-1.appspot.com",
+     messagingSenderId: "454801834118",
+     appId: "1:454801834118:web:1da91321d629908c089107"
+   };
+
+   // Initialize Firebase
+   const app = initializeApp(firebaseConfig);
+   const db = getDatabase(app);
+const Name = document.querySelector("#Name") 
+const Email = document.querySelector("#Email")
+document.querySelector('#submit').addEventListener('click', Submit) 
+   
+function Submit() {
+  const timestamp = buildTimestamp()
+  
+  set(ref(db, timestamp), {
+	  Name: Name.value,
+      email: Email.value,
+  });
+
+  Name.value = ""
+  Email.value = ""
+}
+
+function buildTimestamp() {
+  const now = new Date();
+  let timestamp = now.getFullYear().toString() + "/";
+  //const month = now.toLocaleString('default', { month: 'long' });
+
+  let month = now.getMonth()+1   //add 1 because Javascript uses 0 for January
+  month = month.toString()
+  month = addLeadingZero(month)
+  timestamp += month + "/"; 
+
+  let date = now.getDate().toString()
+  date = addLeadingZero(date)
+  timestamp += date + "/";
+
+  let hours = now.getHours().toString()
+  hours = addLeadingZero(hours)
+  timestamp += hours + ":";
+
+  let minutes = now.getMinutes().toString()
+  minutes = addLeadingZero(minutes)
+  timestamp += minutes + ":";
+
+  let seconds = now.getSeconds().toString()
+  seconds = addLeadingZero(seconds)
+  timestamp += seconds;
+
+  return timestamp
+}
+
+function addLeadingZero(units) {
+	if (units.length < 2) {
+		units = "0" + units
+	}
+	return units
+}
+ </script>
+  
+ 
+</body>
