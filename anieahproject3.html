@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Glass+Antiqua&family=Kalam:wght@300&family=Londrina+Shadow&family=Montserrat:ital@1&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+body {
+font-family: 'Montserrat', sans-serif;
+  margin: 0 auto;
+  max-width: 600px;
+  background: #F8C8DC;
+}
+div {
+  height: 250px;
+  background-size: cover;
+  position: relative;
+  margin: 40px 0 0 0;
+  border-radius: 12px;
+}
+h1 {
+  font-family: 'Kalam', cursive;
+  text-align: center;
+  font-size: 90px;
+  color: #8B0000;
+  margin: 60px 0 0 0;
+}
+h2 {
+  text-align: center;
+  color: #FF7F7F;
+  margin: 0px 0 70px 0;
+  font-family: 'Permanent Marker', cursive;
+}
+p {
+  color: rgba(255,20,100,255);
+  background: black;
+  background: linear-gradient(bottom, rgba(255,255,255,.4,), rgba(255,255,255,.4));
+  background: -webkit-linear-gradient(bottom, rgba(255,255,255,1), rgba(255,255,255,.4));
+  background: -moz-linear-gradient(bottom, rgba(255,255,255,1), rgba(255,255,255,.4));
+  padding: 10px;
+  line-height: 28px;
+  text-align: justify;
+  position: absolute;
+  bottom: 0;
+  margin: 0;
+  height: 30px;
+  transition: height .5s;
+  -webkit-transition: height .5s;
+  -moz-transition: height .5s;
+}
+
+small {
+  opacity: 0;
+}
+
+.show-description p {
+  height: 150px;
+}
+
+.show-description small {
+  opacity: 1;
+}
+
+.first{
+  background-image: url("https://i.pinimg.com/originals/37/7c/4c/377c4c380903a7a4c9d67c225a479318.jpg");
+}
+.second{
+  background-image: url("https://www.thedailymeal.com/img/gallery/12-store-bought-cinnamon-rolls-ranked-worst-to-first/l-intro-1678410294.jpg");
+}
+.dessert{
+  background-image: url("https://3brothersbakery.com/wp-content/uploads/2018/11/CupcakeAssorted5.jpg");
+}
+.price {
+  float: right;
+}
+@media (max-width: 500px) {
+  h1 {
+    font-size: 50px;
+    margin-top: 20px;
+    line-height: 40px;
+  }
+  h2 {
+    font-size: 20px;
+    margin: 20px 0 30px 0;
+  }
+  div {
+    margin: 20px 12px 0 12px;
+  }
+  p {
+    font-size: 20px;
+    line-height: 24px;
+  }
+  small {
+    font-size: 16px;
+  }
+}
+input {
+	font-size: 22px;
+}
+
+</style>
+
+</head>
+
+<body>
+<h1>anieah's bakery</h1>
+<h2>a New York City Classic</h2>
+<div class="first">
+<input class="quantities" type="number" min="0" style="width: 50px"><p>Strawberry Shortcake <span class="price">$14</span><br />
+  <small>A tender vanilla cake filled with layers of whipped cream frosting and sweet strawberries. The classic flavors of strawberry shortcake in a layer cake.
+ </small></p>
+</div>
+
+<div class="second">
+<input class="quantities"type="number" min="0" style="width: 50px">  <p>Cinnamon Rolls <span class="price">$22</span><br />
+  <small> A sweet baked doughy dessert filled with a cinnamon-sugar filling. </small></p>
+</div>
+  
+<div class="dessert">
+<input class="quantities" type="number" min="0" style="width: 50px"><p>Cupcakes <span class="price">$8</span><br />
+  <small>Customizable cupcakes, come in many different flavors and made to your liking! </small></p>
+</div>
+<br><br>
+  <input id="Name" placeholder="Your name">
+  <input id="Email" type="email" placeholder="Your email">
+  <input id="submit" type="submit">
+<br><br>
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAlxuTPpjWwaRB1SZMpgiYqdzq8n8Me3Kg",
+    authDomain: "anieah-website-3.firebaseapp.com",
+    projectId: "anieah-website-3",
+    storageBucket: "anieah-website-3.appspot.com",
+    messagingSenderId: "299633791539",
+    appId: "1:299633791539:web:1c2e2ab548d6b14fdcc946"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  
+  const Name = document.querySelector("#Name") 
+  const Email = document.querySelector("#Email")
+  document.querySelector('#submit').addEventListener('click', Submit) 
+  const quantities = document.querySelectorAll(".quantities")
+const itemsList = ["Shortcake", "CinnaRolls", "Cupcakes"]
+  const prices = document.querySelectorAll(".price") 
+   
+  function Submit() {
+    const timestamp = buildTimestamp()
+	  let total = 0
+	  let cart = { }
+	  for  (let i=0; i<quantities.length; i=i+1) {
+		  if (quantities[i].value != "0" &&    	quantities[i].value != "") {
+                let price = prices[i].innerHTML.replace('$', '')
+		total = total + quantities[i].value * price 	
+	    cart[itemsList[i]] = parseInt(quantities[i].value) 
+	  	}
+	  	quantities[i].value = ""
+             
+	  }
+  
+    set(ref(db, timestamp), {
+  	  Name: Name.value,
+        email: Email.value,
+	    cart: cart,
+            totalPrice: total,
+	    paid: "not yet",
+    });
+
+    Name.value = ""
+    Email.value = ""
+  }
+
+  function buildTimestamp() {
+    const now = new Date();
+    let timestamp = now.getFullYear().toString() + "/";
+    //const month = now.toLocaleString('default', { month: 'long' });
+
+    let month = now.getMonth()+1   //add 1 because Javascript uses 0 for January
+    month = month.toString()
+    month = addLeadingZero(month)
+    timestamp += month + "/"; 
+
+    let date = now.getDate().toString()
+    date = addLeadingZero(date)
+    timestamp += date + "/";
+
+    let hours = now.getHours().toString()
+    hours = addLeadingZero(hours)
+    timestamp += hours + ":";
+
+    let minutes = now.getMinutes().toString()
+    minutes = addLeadingZero(minutes)
+    timestamp += minutes + ":";
+
+    let seconds = now.getSeconds().toString()
+    seconds = addLeadingZero(seconds)
+    timestamp += seconds;
+
+    return timestamp
+  }
+
+  function addLeadingZero(units) {
+  	if (units.length < 2) {
+  		units = "0" + units
+  	}
+  	return units
+  }
+  
+</script>
+  
+
+
+</body>
